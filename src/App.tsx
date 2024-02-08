@@ -11,71 +11,33 @@ const Wrapper = styled(motion.div)`
   flex-direction: column;
 `;
 
-const Box = styled(motion.div)`
-  width: 200px;
-  height: 100px;
+const Box = styled(motion.div)<{$isClicked:boolean}>`
+  width: 400px;
+  height: 400px;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 40px;
-  position: absolute;
-  top: 100px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 28px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
+  justify-content: ${props => props.$isClicked ? "center" : "flex-start"};
+  align-items: ${props => props.$isClicked ? "center" : "flex-start"};
+`;
+
+const Circle = styled(motion.div)`
+  background-color: #00a5ff;
+  height: 100px;
+  width: 100px;
+  border-radius: 50px;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
 `;
 
-const boxVars = {
-  entry: (isBack:boolean) => ({
-    x: isBack ? -500 : 500,
-    opacity: 0,
-    scale: 0,
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 1
-    },
-  },
-  exit: (isBack:boolean) => ({
-    x: isBack ? 500 : -500,
-    opacity: 0,
-    scale: 0,
-    transition: {
-      duration: 1
-    },
-  }),
-}
-
 function App() {
-  const [visible, setVisible] = useState(1);
-  const [back, setBack] = useState(false);
-  const nextPlease = () => {
-    setVisible(prev => prev === 10 ? 1 : prev + 1);
-    setBack(false);
-  }
-  const prevPlease = () => {
-    setVisible(prev => prev === 1 ? 10 : prev - 1);
-    setBack(true);
-  }
+  const [clicked, setClicked] = useState(false);
+  const toggleClick = () => setClicked(prev => !prev);
   return (
-    <Wrapper>
-      <AnimatePresence mode="wait" custom={back}>
-        <Box 
-          custom={back}
-          variants={boxVars} 
-          initial="entry" 
-          animate="center" 
-          exit="exit" 
-          key={visible}
-        >
-          {visible}
-        </Box> 
-      </AnimatePresence>
-      <button onClick={prevPlease}>prev</button>
-      <button onClick={nextPlease}>next</button>
+    <Wrapper onClick={toggleClick}>
+        <Box $isClicked={clicked}>
+          <Circle layout />
+        </Box>
     </Wrapper>
   );
 }
